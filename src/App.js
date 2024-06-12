@@ -1,50 +1,69 @@
+import React, { useState, useEffect } from "react";
+import Navbar from "./components/Navbar.js";
+import Textform from "./components/Textform.js";
+import About from "./components/About.js";
+import Alert from "./components/Alert.js";
+import "./App.css"; // Import the global CSS file
+import DangerAlert from "./components/DangerAlert.js";
+
+
+// Routing settings : react-router-dom
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  let buttonStyle = {
+    position: "fixed",
+    right: "20px",
+    top: "60px",
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
+
   return (
-    <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="/">
-            Text-Utils
-          </a>
+    <Router>
+      <div>
+        <Navbar
+          title="Text-Utils"
+          abouttext="About Us"
+          hometext="Home"
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+        />
+        <Alert alert="This is alert" />
+
+        <div className="dark-mode-toggle my-4">
           <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
+            onClick={toggleDarkMode}
+            className={`btn btn-dark toggle-button ${
+              darkMode ? "dark" : "light"
+            }`}
+            style={buttonStyle}
           >
-            <span className="navbar-toggler-icon"></span>
+            {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/">
-                  About
-                </a>
-              </li>
-            </ul>
-            <form className="d-flex">
-              <input
-                className="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button className="btn btn-outline-success" type="submit">
-                Search
-              </button>
-            </form>
-          </div>
         </div>
-      </nav>
-    </>
+
+        <div className="container my-3">
+          <Routes>
+            <Route path="/home" element={<Textform heading="Enter Your Text Here" />} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<DangerAlert alert="404 Page Not Found" />} />
+            <Route path="/" element={<Textform heading="Enter Your Text Here" />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
